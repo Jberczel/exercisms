@@ -1,27 +1,44 @@
 class FoodChainSong
 
-  ANIMALS = { 1 => 'fly', 2 => 'spider', 3 => 'bird', 4 => 'cat', 5 => 'dog' }
+  ANIMALS = { 1 => ['fly', ''],
+              2 => ['spider', "It wriggled and jiggled and tickled inside her.\n"], 
+              3 => ['bird', "How absurd to swallow a bird!\n"],
+              4 => ['cat', "Imagine that, to swallow a cat!\n"],
+              5 => ['dog', "What a hog, to swallow a dog!\n"],
+              6 => ['goat', "Just opened her throat and swallowed a goat!\n"],
+              7 => ['cow', "I don't know how she swallowed a cow!\n"],
+              8 => ['horse', "She's dead, of course!\n"]
+            }
 
+  def verse(num)
+    animal, unique_phrase = ANIMALS[num]
 
+    # unique lines
+    lyrics = "I know an old lady who swallowed a #{animal}.\n"
+    lyrics << unique_phrase
+    return lyrics if num == 8 # last verse is short
 
- def verse(num)
-  animal = ANIMALS[num]
-  lyrics = ''
-  lyrics << "I know an old lady who swallowed a #{animal}.\n"
-  lyrics <<  "What a hog, to swallow a dog!\n" if num == 5
-  lyrics <<  "She swallowed the dog to catch the cat.\n" if num >= 5
-  lyrics << "Imagine that, to swallow a cat!\n" if num == 4
-  lyrics << "She swallowed the cat to catch the bird.\n" if num >= 4
-  lyrics << "How absurd to swallow a bird!\n" if num == 3
-  lyrics << "She swallowed the bird to catch the spider that wriggled and jiggled and tickled inside her.\n" if num >= 3
-  lyrics << "It wriggled and jiggled and tickled inside her.\n" if num == 2
-  lyrics << "She swallowed the spider to catch the fly.\n" if num >= 2
-  lyrics <<"I don't know why she swallowed the fly. Perhaps she'll die.\n"
-  lyrics
- end
+    # repeating lines
+    num.downto(2) do |i|
+      lyrics << "She swallowed the #{ANIMALS[i][0]} to catch the #{ANIMALS[i-1][0]}"
+      lyrics << " that wriggled and jiggled and tickled inside her" if ANIMALS[i][0] == "bird"
+      lyrics << ".\n"
+    end
 
+    lyrics <<"I don't know why she swallowed the fly. Perhaps she'll die.\n"
+    lyrics
+  end
+
+  def verses(v1, v2)
+    (v1..v2).inject("") { |verses, num| verses << verse(num) + "\n" }
+  end
+
+  def sing
+    verses(1,8)
+  end
 
 end
-    
 
-puts FoodChainSong.new.verse(4)
+
+
+puts FoodChainSong.new.sing
