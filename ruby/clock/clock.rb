@@ -1,13 +1,15 @@
 class Clock
-  attr_reader :hr, :min
+  attr_reader :time
+
+  HOUR = 60
+  DAY  = 24
 
   def self.at(hr,min = 0)
     new(hr,min)
   end
 
   def initialize(hr,min)
-    @hr   = hr
-    @min  = min
+    @time  = (hr * 60) + min
   end
 
   def to_s
@@ -15,37 +17,27 @@ class Clock
   end
 
   def +(min)
-    update_time(self.min + min)
+    @time += min
     self
   end
 
   def -(min)
-    update_time(self.min - min)
+    @time -= min
     self
   end
 
-  def ==(clock)
-    hr == clock.hr && min == clock.min
+  def ==(other)
+    time == other.time
   end
 
   private
 
-  def update_time(delta_min)
-    while delta_min >= 60
-      @hr += 1
-      delta_min -= 60
-    end
-
-    while delta_min <= 0
-      @hr -= 1
-      delta_min += 60
-    end
-
-    @min = delta_min
-    @hr  = hr % 24
+  def hr
+    @hr = (time / HOUR) % DAY
   end
 
+  def min
+    @min = time % HOUR
+  end
 end
-
-
 
