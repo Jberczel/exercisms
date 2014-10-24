@@ -25,11 +25,11 @@ class RobotTest < MiniTest::Unit::TestCase
     assert_match /^[a-zA-Z]{2}\d{3}$/, name2
   end
 
-      def test_collision
-        r1 = Robot.new
-        r2 = Robot.new
-        r1.name = 'ab123'
-        r2.name = 'ab123'
-        assert r1.name != r2.name
-      end
+  def test_collision
+    r1 = Robot.new
+    r2 = Robot.new
+    r1.name = 'ab123'
+    r2.name = 'ab123'
+    assert r1.name != r2.name
+  end
 end
