@@ -4,11 +4,11 @@ class Clock
   HOUR = 60
   DAY  = 24
 
-  def self.at(hr,min = 0)
-    new(hr,min)
+  class << self
+    alias_method :at, :new
   end
 
-  def initialize(hr,min)
+  def initialize(hr,min=0)
     @time  = (hr * 60) + min
   end
 

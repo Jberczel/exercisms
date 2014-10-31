@@ -12,7 +12,7 @@ class Nucleotide
   end
 
   def count(nucleotide)
-    @strand.chars.count(nucleotide)
+    @strand.count(nucleotide)
   end
 
   def histogram

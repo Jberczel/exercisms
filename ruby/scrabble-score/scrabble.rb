@@ -11,7 +11,7 @@ class Scrabble
   end
 
   # convenient scoring
-  def self.score(word)
+  def self.score(word)  
     new(word).score
   end
 

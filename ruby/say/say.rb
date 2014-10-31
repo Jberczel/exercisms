@@ -1,53 +1,50 @@
 class Say
+  attr_reader :num
 
-  ONES = %w(zero one two three four five six seven eight nine)
-  TEENS= %w(ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen)
-  TENS = %w(zero ten twenty thirty forty fifty sixty seventy eighty ninety)
+  UNDER_20    = %w(zero one two three four five six seven eight nine) +
+                %w(ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen)
 
-  scale_word = ['billion', 'million', 'thousand', 'hundred', '', '' ]
-  scale_num  = [10**9, 10**6, 1000, 100, 10, 1]
-  UNITS = scale_word.zip scale_num
+  UNDER_100   = %w(zero ten twenty thirty forty fifty sixty seventy eighty ninety)
+
+  LARGE_UNITS = ['billion', 'million', 'thousand', 'hundred'].zip [10**9, 10**6, 1000, 100]
 
   def initialize(num)
+    raise ArgumentError unless num.between?(0, (10**12)-1)
     @num = num
   end
 
   def in_english
-    raise ArgumentError if @num < 0 || @num >= 10**12
-    return 'zero' if @num.zero?
-    output = []
-
-    UNITS.each do |scale_word, scale_num|
-      amt, @num = @num.divmod(scale_num)
-      if amt > 0
-
-        if scale_num == 10
-          if amt == 1
-            output << "#{TEENS[@num]}"
-            @num = 0
-          else
-            output << "#{TENS[amt]}"
-          end
-        elsif scale_num == 1
-          output << "#{ONES[amt]}"
-        else
-          output << "#{self.class.new(amt).in_english} #{scale_word}"
-        end
-        
-      end
-    end
-    add_hyphen(output.join(' '))
+    num_to_words(num)
   end
 
   private
 
-  def add_hyphen(phrase)
-    # only add hypen for > twenty
-    TENS[2..-1].each do |word|  
-      phrase.gsub!("#{word} ","#{word}-") if phrase.include?(word)
+  def num_to_words(num)
+    return under_20_word(num)  if num < 20
+    return under_100_word(num) if num < 100
+    large_word(num)
+  end
+
+  def under_20_word(num)
+    UNDER_20[num]
+  end
+
+  def under_100_word(num)
+    output = []
+    occurences, left_over = num.divmod(10)
+    output << UNDER_100[occurences]
+    output <<  UNDER_20[left_over] unless left_over.zero?
+    output.join('-')
+  end
+
+  def large_word(num)
+    output = []
+    LARGE_UNITS.each do |word, value|
+      next if num < value
+      occurences, num = num.divmod(value)
+      output << "#{num_to_words(occurences)} #{word}"
     end
-    phrase
+    output << num_to_words(num) unless num.zero?  
+    output.join(' ')
   end
 end
-
-
