@@ -14,13 +14,12 @@ class Matrix
     grid.transpose
   end
 
-  #returns [[x,y]]
   def saddle_points
-    saddle_points = []
-    each do |r,c|
-      saddle_points << [r,c] if grid[r][c] == rows[r].max && grid[r][c] == columns[c].min
+    [].tap do |ary|
+      each_with_indices do |val, r, c|
+        ary << [r,c] if row_max?(val, r) && col_min?(val,c)       
+      end
     end
-    saddle_points
   end
 
   private
@@ -31,15 +30,17 @@ class Matrix
     end
   end
 
-  def each(&block)
-    grid.each_index do |r|
-      grid[r].each_index { |c| block.call(r,c) }
-    end
+  def row_max?(value, index)
+    value == rows[index].max
   end
 
+  def col_min?(value, index)
+    value == columns[index].min
+  end
+
+  def each_with_indices
+    grid.each_index do |r|
+      grid[r].each_with_index { |value, c| yield(value,r,c) }
+    end
+  end
 end
-
-
-matrix = Matrix.new("89 1903 3\n18 3 1\n9 4 800")
-
-matrix.saddle_points
