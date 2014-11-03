@@ -1,19 +1,16 @@
 module House
-
   class << self
-
     def recite
-      verse_1 + verse_2_12
+      verses(1, 12)
     end
 
-    def verse_1
-      "This is the house that Jack built.\n\n"  
+    def verses(from, to)
+      (from..to).map { |i| verse i }.join("\n")  
     end
 
-    def verse_2_12
-      unique_lines.each_with_index.map do |uniq_line, i|
-        "#{uniq_line}\n#{repeating_lines[(-1-i)..-1].join("\n")}\n"
-      end.join("\n")
+    def verse(n)
+      return "#{unique_lines.first}\n" if n == 1  # first verse has a single line
+      "#{unique_lines[n-1]}\n#{repeating_lines.last(n-1).join("\n")}\n"
     end
 
     def repeating_lines
@@ -27,12 +24,12 @@ module House
         "that worried the cat",
         "that killed the rat",
         "that ate the malt",
-        "that lay in the house that Jack built."
-       ]
+        "that lay in the house that Jack built." ]
     end
 
     def unique_lines
-      [ "This is the malt",
+      [ "This is the house that Jack built.",
+        "This is the malt",
         "This is the rat",
         "This is the cat",
         "This is the dog",
