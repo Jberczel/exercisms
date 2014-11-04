@@ -1,29 +1,29 @@
 class SecretHandshake
   attr_reader :num, :binary
 
-  binary =  [10000, 1000, 100, 10, 1]
-  commands =%w(reverse jump close\ your\ eyes double\ blink wink)
-  SECRETS = binary.zip commands
+  SECRETS = %w(wink double\ blink close\ your\ eyes jump)
 
   def initialize(input)
     @num = input.kind_of?(Integer) ? input : 0
   end
 
   def binary
-    num.to_s(2).to_i
+    num.to_s(2)
   end
 
   def commands
     @commands ||= get_commands
   end
 
+  def formatted_binary
+    binary.split(//).map(&:to_i).reverse  ### "1010" => [0, 1, 0, 1] 
+  end
+
   def get_commands
-    ary, tmp = [], binary
-    SECRETS.each do |limit, command|
-      next if limit > tmp
-      tmp = tmp % limit
-      ary.unshift command unless command == 'reverse'
+    ary = []
+    formatted_binary.each_with_index do |num, i|
+      ary << SECRETS[i] if num == 1
     end
-    binary >= 1000 ? ary.reverse : ary
+    ary.include?(nil) ? ary.compact.reverse : ary
   end
 end
