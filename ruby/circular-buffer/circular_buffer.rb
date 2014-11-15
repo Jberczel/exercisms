@@ -2,8 +2,8 @@ class CircularBuffer
   def initialize(size)
     @buffer    = Array.new(size)
     @size      = size
-    @shift_idx = 0
-    @push_idx  = 0
+    @read      = 0
+    @write     = 0
   end
 
   def write(input)
@@ -16,22 +16,22 @@ class CircularBuffer
   end
 
   def record(input, overwrite: false )
-    return if input.nil?
+    return self if input.nil?
     if overwrite
-      @buffer[@shift_idx % @size] = input
-      @shift_idx += 1
+      @buffer[@read] = input
+      @read = cycle(@read)
     else
-      @buffer[@push_idx % @size] = input
-      @push_idx += 1
+      @buffer[@write] = input
+      @write = cycle(@write)
     end
     self
   end
 
   def read
     raise BufferEmptyException if @buffer.compact.empty?
-    tmp = @buffer[@shift_idx % @size]
-    @buffer[@shift_idx % @size] = nil
-    @shift_idx += 1
+    tmp = @buffer[@read]
+    @buffer[@read] = nil
+    @read = cycle(@read)
     tmp
   end
 
@@ -43,6 +43,10 @@ class CircularBuffer
 
   def buffer_full?
     @buffer.none? { |e| e == nil }
+  end
+
+  def cycle(idx)
+    (idx + 1) % @size
   end
 
   class BufferEmptyException < StandardError; end
