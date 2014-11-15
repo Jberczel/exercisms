@@ -4,36 +4,32 @@ class BinarySearch
   def initialize(list)
     raise ArgumentError unless list == list.sort
     @list = list
+    set_indices
   end
 
   def search_for(num)
-    raise RuntimeError unless list.include?(num)
+    raise RuntimeError if @imax <= @imin
     mid_val = list.fetch(middle)
-    puts "middle: idx: #{middle}, val: #{mid_val}"
-    if mid_val == num
+    if num == mid_val
+      set_indices
       return list.index(num)
     else
       if num < mid_val
-        @list = list.take(middle)
+        @imax = middle
       else
-        @list = list.drop(middle + 1)
+        @imin = middle + 1
       end
-        puts "mid_val: #{mid_val} eql? num: #{num}"
-        puts "list: #{@list}"
-        search_for(num)
+      search_for(num)
     end
   end
 
   def middle
-    list.size / 2
+    (@imin + @imax) / 2
+  end
+
+  private
+
+  def set_indices
+    @imin, @imax = 0, list.size
   end
 end
-
-binary = BinarySearch.new([1, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377])
-
-p binary.list
-p binary.middle
-puts
-
-p binary.search_for(21)
-p binary.list

@@ -29,7 +29,7 @@ class BinarySearchTest < MiniTest::Unit::TestCase
   end
 
   def test_it_finds_position_of_search_data
-  
+
     binary = BinarySearch.new([1, 3, 4, 6, 8, 9, 11])
     assert_equal 5, binary.search_for(9)
   end
@@ -42,7 +42,7 @@ class BinarySearchTest < MiniTest::Unit::TestCase
   end
 
   def test_it_finds_correct_position_in_a_list_with_an_even_number_of_elements
-
+ 
     binary = BinarySearch.new([1, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377])
     assert_equal 5, binary.search_for(21)
     assert_equal 6, binary.search_for(34)
