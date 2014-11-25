@@ -1,5 +1,6 @@
 module Atbash
-  CIPHER = Hash[[*'a'..'z'].zip([*'a'..'z'].reverse)]
+  PLAIN = [*'a'..'z'].join
+  CIPHER = PLAIN.reverse
 
   class << self
     def encode(string, size=5)
@@ -13,7 +14,7 @@ module Atbash
     end
 
     def encrypt(string)
-      string.chars.map { |i| CIPHER[i] || i }.join
+      string.tr(PLAIN, CIPHER)
     end
 
     private
