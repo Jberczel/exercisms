@@ -1,6 +1,9 @@
 class Allergies
   attr_reader :score
 
+  LOOKUP = [["cats", 128], ["pollen", 64], ["chocolate", 32], ["tomatoes", 16],
+            ["strawberries", 8], ["shellfish", 4], ["peanuts", 2], ["eggs", 1]]
+
   def initialize(score)
     @score = score
   end
@@ -10,25 +13,20 @@ class Allergies
   end
 
   def list
-    tmp = score
-    # @list ||= LOOKUP.take_while { |item| item[1] <= score }
-    #                 .map { |item| item[0] }  # retrieve only item names, not scores
-    ary = []
-    LOOKUP.each do |item|
-      if tmp >= item[1]
-        ary.unshift item[0]
-        tmp = tmp % item[1]
-      end
+    @list ||= make_list
+  end
+
+  private
+
+  def make_list
+    tally_score = score
+    LOOKUP.each_with_object([]) do |(item, rating), list|
+      next if tally_score < rating
+      list.unshift(item)
+      tally_score %= rating
     end
-    ary
   end
 
 end
 
-LOOKUP = [["cats", 128], ["pollen", 64], ["chocolate", 32], ["tomatoes", 16],
-          ["strawberries", 8], ["shellfish", 4], ["peanuts", 2], ["eggs", 1]]
-
-
-
-p Allergies.new(509).list
 
