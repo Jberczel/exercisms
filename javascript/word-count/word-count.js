@@ -1,19 +1,11 @@
 function words(text) {
-  list = format(text)
-
-  h = {};
-  list.forEach(function(val) {
-    if (typeof(h[val]) === 'undefined') {
-      h[val] = 1;
-    } else { 
-      h[val] += 1;
-    }
-  });
-  return h;
+  var words = text.split(/\s+/);
+  return words.reduce(count, {});
 }
 
-function format(text) {
-  return text.replace("\n"," ").split(" ");
+function count(hash, val) {
+  hash[val] = (hash[val] || 0) + 1;
+  return hash;
 }
 
 module.exports = words;
