@@ -14,6 +14,3 @@ class Array
     map { |i| i if block.call(i) == condition }.compact
   end
 end
-
-
-p [10, 5, 24, 25, 36, 32, 35].keep { |i| i % 5 == 0 }
