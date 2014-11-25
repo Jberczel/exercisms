@@ -10,25 +10,17 @@ class Palindromes
   def generate
     (min_factor..max_factor).each do |i|
       (i..max_factor).each do |k|        
-          @factors << [i,k] if palindrome?(i*k)
+          @factors << Factors.new(i,k) if palindrome?(i*k)
       end
     end
   end
 
   def largest
-    max = @factors.max_by { |factors| factors[0] * factors[1] }
-    max = @factors.select { |factor| (factor[0] * factor[1]) == (max[0] * max[1]) } 
-    PalindromeProducts.new(max)
+    get_factors(:max)
   end
 
   def smallest
-    min = min_max[0]
-    min = @factors.select { |factor| (factor[0] * factor[1]) == (min[0] * min[1]) } 
-    PalindromeProducts.new(min)
-  end
-
-  def min_max
-    min, max = @factors.minmax_by { |f| f[0] * f[1] }
+    get_factors(:min)
   end
 
   private
@@ -37,20 +29,21 @@ class Palindromes
     s = num.to_s
     s == s.reverse
   end
-end
 
-PalindromeProducts = Struct.new(:factors) do
-  def value
-    factors[0][0] * factors[0][1]
+  def get_factors(method)
+    minmax  = @factors.send(method) { |a,b| a.value <=> b.value }
+    factors = @factors.select { |f| f.value == minmax.value }
+                      .map { |f| [f.a, f.b] }  # convert to array of factors for testing
+    MultipleFactors.new(minmax.value, factors)
   end
 end
 
 
-p = Palindromes.new(max_factor: 99)
+Factors = Struct.new(:a, :b) do
+  def value
+    a * b
+  end
+end
 
-p.generate
-p p.factors
-p p.smallest.value
-p p.largest.value
-p p.min_max
-
+MultipleFactors = Struct.new(:value, :factors)
+ 
