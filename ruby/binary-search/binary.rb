@@ -4,14 +4,14 @@ class BinarySearch
   def initialize(list)
     raise ArgumentError unless list == list.sort
     @list = list
-    set_indices
+    reset_indices
   end
 
   def search_for(num)
     raise RuntimeError if @imax <= @imin
     mid_val = list.fetch(middle)
     if num == mid_val
-      set_indices
+      reset_indices
       return list.index(num)
     else
       if num < mid_val
@@ -29,7 +29,7 @@ class BinarySearch
 
   private
 
-  def set_indices
+  def reset_indices
     @imin, @imax = 0, list.size
   end
 end
