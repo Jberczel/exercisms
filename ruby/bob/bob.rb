@@ -1,17 +1,20 @@
 class Bob
   def hey(msg)
+    return "Whoa, chill out!"   if shouting?(msg)
+    return "Sure."              if question?(msg)
     return "Fine. Be that way!" if blank?(msg)
-    return "Whoa, chill out!"   if forceful?(msg)
-    return "Sure."              if msg.end_with?('?')
     "Whatever."
   end
 
-  def forceful?(msg)
-    msg == msg.upcase && 
-    msg.chars.any? { |i| i =~ /[A-Z]/ }
+  def shouting?(msg)
+    msg == msg.upcase && msg[/[A-Z]/]
+  end
+
+  def question?(msg)
+    msg.end_with?('?')
   end
 
   def blank?(msg)
-    msg.chars.all? { |i| i =~ /\s/ }
+    msg.strip.size == 0
   end
 end
