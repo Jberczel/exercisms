@@ -16,8 +16,8 @@ class Matrix
 
   def saddle_points
     [].tap do |ary|
-      each_with_indices do |val, r, c|
-        ary << [r,c] if row_max?(val, r) && col_min?(val,c)       
+      each_with_indices do |val,r,c|
+        ary << [r,c] if saddle_point?(val, r, c)     
       end
     end
   end
@@ -30,6 +30,10 @@ class Matrix
     end
   end
 
+  def saddle_point?(val, r, c)
+    row_max?(val, r) && col_min?(val, c)
+  end
+
   def row_max?(value, index)
     value == rows[index].max
   end
@@ -40,7 +44,8 @@ class Matrix
 
   def each_with_indices
     grid.each_index do |r|
-      grid[r].each_with_index { |value, c| yield(value,r,c) }
+      grid[r].each_with_index { |val, c| yield(val,r,c) }
     end
   end
 end
+      

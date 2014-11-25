@@ -8,15 +8,17 @@ class WordProblem
   end
 
   def answer
-    ops = operators
-    numbers.drop(1).each.reduce(numbers.first) do |a,b|
+    ops = operators.dup
+    numbers.drop(1).reduce(numbers.first) do |a,b|
       operator = ops.shift
-      calculate.fetch(operator).call(a,b)
+      calculate.fetch(operator)[a,b]
     end
   end
 
+  OPERATORS = /plus|minus|multiplied|divided|raised/
+
   def operators
-    @operators ||= text.scan(/plus|minus|multiplied|divided/).map(&:to_sym)
+    @operators ||= text.scan(OPERATORS).map(&:to_sym)
   end
 
   def numbers
@@ -28,7 +30,8 @@ class WordProblem
       :plus       => lambda { |a,b| a + b },
       :minus      => lambda { |a,b| a - b },
       :multiplied => lambda { |a,b| a * b },
-      :divided    => lambda { |a,b| a / b }
+      :divided    => lambda { |a,b| a / b },
+      :raised     => lambda { |a,b| a **b  }
     }
   end
 
@@ -42,3 +45,30 @@ class WordProblem
     raise ArgumentError if numbers.empty?
   end
 end
+
+    display = -> (question) do
+      wp = WordProblem.new(question)
+      printf("%10s %s\n", "Question:", question)
+      printf("%10s %s\n", "Solution:", wp.answer)
+      printf("%10s %s\n", "Numbers:", wp.numbers)
+      printf("%10s %s\n\n", "Operators:", wp.operators)
+    end
+
+    display["5 plus 6?"]
+    display["10 multiplied 5 divided by 2?"]
+    display["2 raised 6th power?"]
+
+#  Question: 5 plus 6?
+#  Solution: 11
+#   Numbers: [5, 6]
+# Operators: [:plus]
+
+#  Question: 10 multiplied 5 divided by 2?
+#  Solution: 25
+#   Numbers: [10, 5, 2]
+# Operators: [:multiplied, :divided]
+
+#  Question: 2 raised 6th power?
+#  Solution: 64
+#   Numbers: [2, 6]
+# Operators: [:raised]

@@ -4,7 +4,7 @@ class Robot
   DIRECTIONS = [:east, :south, :west, :north]
 
   def initialize
-    @bearing = :east
+    @bearing     = DIRECTIONS.first
     @coordinates = []
   end
 
@@ -40,7 +40,7 @@ end
 
 class Simulator
   def instructions(directions)
-    directions.split(//).reduce([]) do |ary, direction|
+    directions.chars.reduce([]) do |ary, direction|
       ary << translate_instructions.fetch(direction)
     end
   end

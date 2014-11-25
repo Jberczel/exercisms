@@ -9,19 +9,19 @@ class Meetup
   end
 
   def day(weekday, schedule)
-    weekdays = days.select { |d| d.send("#{weekday}?") }
-    find_week.fetch(schedule).call(weekdays)
+    weeks = days.select { |d| d.send("#{weekday}?") }
+    find_week.fetch(schedule).call(weeks)
   end
 
   private
 
   def find_week
-    { :first  => lambda { |week| week[0] },
-      :second => lambda { |week| week[1] },
-      :third  => lambda { |week| week[2] },
-      :fourth => lambda { |week| week[3] },
-      :last   => lambda { |week| week[-1] },
-      :teenth => lambda { |week| teenth(week) }
+    { :first  => lambda { |weeks| weeks[0] },
+      :second => lambda { |weeks| weeks[1] },
+      :third  => lambda { |weeks| weeks[2] },
+      :fourth => lambda { |weeks| weeks[3] },
+      :last   => lambda { |weeks| weeks[-1] },
+      :teenth => lambda { |weeks| teenth(weeks) }
     }
   end
 

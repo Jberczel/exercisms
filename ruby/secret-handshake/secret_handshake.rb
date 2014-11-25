@@ -1,5 +1,5 @@
 class SecretHandshake
-  attr_reader :num, :binary
+  attr_reader :num
 
   SECRETS = %w(wink double\ blink close\ your\ eyes jump)
 

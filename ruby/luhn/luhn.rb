@@ -1,20 +1,20 @@
 class Luhn
-  attr_reader :digits
+  attr_reader :number
 
   class << self
-    def create(digits)
-      num = new(digits)
-      num.valid? ? num.digits : num.convert_to_luhn
+    def create(number)
+      input = new(number)
+      input.valid? ? number : input.convert_to_luhn
     end
   end
 
-  def initialize(digits)
-    @digits = digits  
+  def initialize(number)
+    @number = number  
   end
 
   def addends
-    formatted_digits.reverse.each_with_index.map do |digit, i|
-      i % 2 != 0 ? encode(digit) : digit
+    digits.reverse.each_with_index.map do |digit, index|
+      index.odd? ? encode(digit) : digit
     end.reverse
   end
 
@@ -23,19 +23,19 @@ class Luhn
   end
 
   def valid?
-    checksum % 10 == 0
+    (checksum % 10).zero?
   end
 
   def convert_to_luhn
-    num = self.class.new(digits * 10)
+    num = self.class.new(number * 10)
     add_digit = num.valid? ? 0 : (10 - num.checksum % 10)
-    (formatted_digits << add_digit).join.to_i
+    (digits << add_digit).join.to_i
   end
 
   private
 
-  def formatted_digits
-    digits.to_s.chars.map(&:to_i)
+  def digits
+    number.to_s.chars.map(&:to_i)
   end
 
   def encode(digit)
@@ -43,9 +43,3 @@ class Luhn
     times_two > 9 ? (times_two - 9) : times_two
   end
 end
-
-
-number = Luhn.new(123026)
-p number.addends
-p number.checksum
-p number.convert_to_luhn

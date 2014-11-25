@@ -1,40 +1,34 @@
 module PigLatin
   class << self
 
-    CASES = ['ch', 'qu', 'squ', 'thr', 'th', 'sch']
+    NO_SWAP_CASES = %w(a e i o u yt xr)       # add "ay"
+    SWAP_CASES    = %w(ch qu squ thr th sch)  # swap front letters and add "ay"
+                                              # otherwise swap first consonante and add "ay"
 
-    def special_cases(word)
-      CASES.each do |c|
-        return to_pig_latin(word, c.length) if word.start_with?(c)
+    def swap_letters(word)
+      SWAP_CASES.each do |c|
+        return swap(word, c.length) if word.start_with?(c)
       end
     end
 
     def translate(text)
-      text.split.map { |w| translate_single(w) }.join(' ')
+      text.split.map { |word| to_pig_latin(word) }.join(' ')
     end
 
-    def translate_single(word)
-      first_letter = word[0]
-      if first_letter =~/[aeiou]/ || word.start_with?("yt", "xr")
-        return word += "ay"
-      elsif word.start_with?(*CASES)
-        return special_cases(word)
-      else
-        return to_pig_latin(word, 1)
+    def to_pig_latin(word)
+      case
+        when word.start_with?(*NO_SWAP_CASES)
+          "#{word}ay"
+        when word.start_with?(*SWAP_CASES)
+          "#{swap_letters(word)}ay"
+        else
+         "#{swap(word,1)}ay"
       end
     end
 
-
-    def to_pig_latin(word, count)
+    def swap(word, count)
       first_chars = word[0...count]
-      word[count..-1] + first_chars + "ay"
+      word[count..-1] + first_chars
     end
   end
 end
-
-
-
-
-
-
-puts PigLatin.translate("chair")

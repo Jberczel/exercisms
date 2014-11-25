@@ -1,9 +1,17 @@
 class Board
+  attr_reader :board
+
   def self.transform(board)
     new(board).transform.to_s
   end
 
-  attr_reader :board
+  ADJACENT_POSITIONS = [ 
+    [0,-1], [0, 1], [1, 0], [ -1, 0],  # down, up, right, left
+    [1, 1], [1,-1], [-1,-1], [-1, 1]   # diagnals
+  ]
+
+  EMPTY = ' '
+  MINE  = '*'
 
   def initialize(board)
     @board = board
@@ -11,29 +19,33 @@ class Board
   end
 
   def transform
-    board.each_with_index do |row, r|
-      row.chars.each_with_index do |col, c|
-        if col == " "
-          counter = 0
-          counter += 1 if board[r][c-1] == '*'
-          counter += 1 if board[r][c+1] == '*'
-          counter += 1 if board[r+1][c] == '*'
-          counter += 1 if board[r-1][c] == '*'
-
-          # diagnals
-          counter += 1 if board[r+1][c+1] == '*'
-          counter += 1 if board[r+1][c-1] == '*'
-          counter += 1 if board[r-1][c-1] == '*'
-          counter += 1 if board[r-1][c+1] == '*'
-          board[r][c] = counter.zero? ? ' ' : counter.to_s
-        end
-      end
+    each_with_coordinates do |r,c|
+      if board[r][c] == EMPTY
+        count = count_mines(r,c).to_s
+        board[r][c] = count unless count == '0'
+      end 
     end
     self
   end
 
   def to_s
     board
+  end
+
+  private
+
+  def each_with_coordinates
+    board.each_with_index do |row, r|
+      row.chars.each_index do |c|
+        yield(r,c)
+      end
+    end
+  end
+
+  def count_mines(r,c)
+    ADJACENT_POSITIONS.reduce(0) do |count, (x,y)|
+      board[r+x][c+y] == MINE ? count +=1 : count
+    end
   end
 
   def validate_board
@@ -62,11 +74,3 @@ class Board
 end
 
 class ValueError < ArgumentError; end
-
-
-
-
-
-
-
- 
