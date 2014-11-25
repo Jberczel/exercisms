@@ -29,7 +29,7 @@ class CustomSet
   end
 
   def intersection(other)
-    intersects = set.keep_if { |i| other.set.any? { |j| i.eql? j } }
+    intersects = set.keep_if { |i| other.member?(i) }
     self.class.new(intersects)
   end
 
